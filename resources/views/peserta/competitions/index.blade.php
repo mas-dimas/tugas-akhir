@@ -12,7 +12,7 @@
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @forelse($competitions as $c)
       <a href="{{ route('peserta.competitions.show', $c) }}"
-         class="group bg-white rounded-2xl shadow-md ring-1 ring-cyan-200 hover:shadow-xl hover:ring-cyan-400 transition overflow-hidden transform hover:-translate-y-1">
+         class="group bg-gradient-to-br from-white via-cyan-50 to-blue-50 rounded-2xl shadow-md ring-1 ring-cyan-200 hover:shadow-xl hover:ring-cyan-400 transition overflow-hidden transform hover:-translate-y-1">
         <!-- Poster Section -->
         <div class="h-48 bg-gradient-to-br from-cyan-300 to-blue-400 overflow-hidden relative">
           @if($c->poster_path)

@@ -22,7 +22,7 @@
       </div>
 
       <!-- File Downloads Card -->
-      <div class="bg-white rounded-2xl shadow-md ring-1 ring-cyan-200 p-5 space-y-3">
+      <div class="bg-gradient-to-br from-white via-cyan-50 to-blue-50 rounded-2xl shadow-md ring-1 ring-cyan-200 p-5 space-y-3">
         <h3 class="font-bold text-lg text-blue-900">📥 Berkas Penting</h3>
 
         @if($competition->guidebook_path)
@@ -68,7 +68,7 @@
     <!-- Main Content -->
     <div class="lg:col-span-2 space-y-5">
       <!-- Title & Status -->
-      <div class="bg-white rounded-2xl shadow-md ring-1 ring-cyan-200 p-6">
+      <div class="bg-gradient-to-br from-white via-orange-50 to-yellow-50 rounded-2xl shadow-md ring-1 ring-cyan-200 p-6">
         <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent mb-3">
           {{ $competition->title }}
         </h1>
@@ -91,7 +91,7 @@
       </div>
 
       <!-- Description -->
-      <div class="bg-white rounded-2xl shadow-md ring-1 ring-cyan-200 p-6">
+      <div class="bg-gradient-to-br from-white via-emerald-50 to-teal-50 rounded-2xl shadow-md ring-1 ring-cyan-200 p-6">
         <h2 class="text-2xl font-bold text-blue-900 mb-3">📋 Deskripsi</h2>
         <p class="text-slate-900 whitespace-pre-line leading-relaxed">
           {{ $competition->description ?? 'Tidak ada deskripsi tersedia.' }}
@@ -99,7 +99,7 @@
       </div>
 
       <!-- Stages -->
-      <div class="bg-white rounded-2xl shadow-md ring-1 ring-cyan-200 p-6">
+      <div class="bg-gradient-to-br from-white via-yellow-50 to-orange-50 rounded-2xl shadow-md ring-1 ring-cyan-200 p-6">
         <h2 class="text-2xl font-bold text-blue-900 mb-3">🎪 Tahapan Lomba</h2>
         <p class="text-slate-900 whitespace-pre-line leading-relaxed">
           {{ $competition->stages ?? 'Tidak ada informasi tahapan.' }}

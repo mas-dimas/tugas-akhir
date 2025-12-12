@@ -21,7 +21,7 @@
   @endif
 
   <!-- Table Section -->
-  <div class="bg-white rounded-2xl shadow-md ring-1 ring-cyan-200 overflow-hidden">
+  <div class="bg-gradient-to-br from-white via-cyan-50 to-blue-50 rounded-2xl shadow-md ring-1 ring-cyan-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead class="bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-cyan-200">
