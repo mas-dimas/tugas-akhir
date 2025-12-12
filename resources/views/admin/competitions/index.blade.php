@@ -51,6 +51,11 @@
                 </td>
                 <td class="p-3">
                   <div class="flex gap-2">
+		    <a href="{{ route('admin.competitions.templates.index', $c) }}"
+		       class="px-3 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600">
+     		      Template
+   		    </a>
+
                     <a href="{{ route('admin.competitions.edit', $c) }}"
                        class="px-3 py-2 rounded-xl bg-amber-500 text-white hover:bg-amber-600">
                       Edit

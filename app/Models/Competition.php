@@ -28,6 +28,6 @@ class Competition extends Model
     // Relasi: satu lomba punya banyak template dokumen
     public function documentTemplates()
     {
-        return $this->hasMany(DocumentTemplate::class);
+        return $this->hasMany(\App\Models\DocumentTemplate::class);
     }
 }

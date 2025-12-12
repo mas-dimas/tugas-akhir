@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\CompetitionController as AdminCompetitionController;
 use App\Http\Controllers\Admin\RegistrationReviewController;
+use App\Http\Controllers\Admin\DocumentTemplateController;
 
 // Controller untuk Peserta
 use App\Http\Controllers\Peserta\CompetitionController as PesertaCompetitionController;
@@ -61,10 +62,28 @@ Route::middleware(['auth', 'role:admin'])
             [RegistrationReviewController::class, 'index'])
             ->name('registrations.index');
 
+        // Melihat detail pendaftaran peserta
+        Route::get('registrations/{registration}/show', 
+            [RegistrationReviewController::class, 'show'])
+            ->name('registrations.show');
+
         // Update status dokumen peserta
         Route::post('documents/{document}/status', 
             [RegistrationReviewController::class, 'updateStatus'])
             ->name('documents.updateStatus');
+
+	// Route untuk template dokumen
+        Route::get('/competitions/{competition}/templates', [DocumentTemplateController::class, 'index'])
+            ->name('competitions.templates.index');
+
+        Route::post('/competitions/{competition}/templates', [DocumentTemplateController::class, 'store'])
+            ->name('competitions.templates.store');
+
+        Route::delete('/templates/{template}', [DocumentTemplateController::class, 'destroy'])
+            ->name('templates.destroy');
+
+
+
     });
 
 
@@ -77,26 +96,20 @@ Route::middleware(['auth', 'role:peserta'])
     ->group(function () {
 
         // Dashboard peserta
-        Route::get('/dashboard', function () {
-            return view('peserta.dashboard');
-        })->name('dashboard');
-
+	Route::get('/dashboard', fn() => view('peserta.dashboard'))->name('dashboard');
 
         // Melihat daftar lomba
-        Route::get('/competitions', 
-            [PesertaCompetitionController::class, 'index'])
+	Route::get('/competitions', [PesertaCompetitionController::class, 'index'])
             ->name('competitions.index');
 
         // Melihat detail lomba
-        Route::get('/competitions/{competition}', 
-            [PesertaCompetitionController::class, 'show'])
+	Route::get('/competitions/{competition}', [PesertaCompetitionController::class, 'show'])
             ->name('competitions.show');
 
-
         // Mendaftar lomba
-        Route::post('/competitions/{competition}/daftar', 
+        Route::post('/competitions/{competition}/register', 
             [RegistrationController::class, 'store'])
-            ->name('registrations.store');
+            ->name('competitions.register');
 
         // Lihat daftar lomba yang sudah didaftarkan user
         Route::get('/registrations', 

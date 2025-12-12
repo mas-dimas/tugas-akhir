@@ -21,6 +21,13 @@ class CompetitionController extends Controller
         return view('admin.competitions.create');
     }
 
+    public function show(Competition $competition)
+    {
+        $competition->load(['registrations', 'documentTemplates']);
+        
+        return view('admin.competitions.show', compact('competition'));
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
