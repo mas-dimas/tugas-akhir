@@ -1,0 +1,479 @@
+================================================================================
+                    SISTEM PENDAFTARAN PERLOMBAAN
+                        Project Overview
+================================================================================
+
+1. TUJUAN PROYEK
+================================================================================
+Sistem web berbasis Laravel 11 untuk mengelola pendaftaran perlombaan dengan 
+dua peran pengguna (Admin dan Peserta) yang dapat saling berinteraksi dalam 
+proses pendaftaran, submission dokumen, dan review.
+
+
+2. TEKNOLOGI YANG DIGUNAKAN
+================================================================================
+Backend              : Laravel 11 (PHP 8.2+)
+Frontend             : Blade Templates, Tailwind CSS, Alpine.js
+Database             : MySQL
+Authentication       : Laravel Breeze
+Build Tool           : Vite, npm
+Testing              : PHPUnit
+
+
+3. ARSITEKTUR SISTEM
+================================================================================
+
+Model Data (Database):
+-----------
+5 Model Utama:
+├── User (dengan role: admin/peserta)
+├── Competition (Perlombaan)
+├── Registration (Pendaftaran Peserta)
+├── DocumentTemplate (Template Dokumen untuk setiap lomba)
+└── SubmissionDocument (Dokumen yang di-upload peserta)
+
+
+Relasi Database:
+-----------
+1 Kompetisi ──────────── N Pendaftaran ──────────── N Dokumen Upload
+                                ↓
+                           1 User/Peserta
+                           
+1 Kompetisi ──────────── N Template Dokumen
+
+
+4. FITUR UNTUK ADMIN
+================================================================================
+1. CRUD Perlombaan
+   - Tambah perlombaan baru
+   - Lihat daftar perlombaan
+   - Edit data perlombaan
+   - Hapus perlombaan
+
+2. Upload Media
+   - Upload poster untuk setiap lomba
+   - Upload guidebook/panduan perlombaan
+
+3. Kelola Template
+   - Buat template dokumen yang diperlukan
+   - Template: Proposal, Surat Rekomendasi, dll
+
+4. Review Peserta
+   - Melihat daftar peserta yang mendaftar untuk setiap lomba
+   - Melihat detail pendaftaran setiap peserta
+
+5. Koreksi Dokumen
+   - Review dokumen yang di-upload peserta
+   - Memberikan status pada dokumen (Belum Dikoreksi / Terdapat Koreksi / Tidak Ada Koreksi)
+
+6. Feedback
+   - Memberikan catatan/feedback ke peserta melalui field notes
+
+
+5. FITUR UNTUK PESERTA
+================================================================================
+1. Browse Perlombaan
+   - Melihat daftar semua perlombaan yang tersedia
+   - Melihat informasi lengkap perlombaan
+
+2. Detail Perlombaan
+   - Melihat deskripsi, tahapan, dan informasi perlombaan
+   - Download guidebook dan poster
+
+3. Pendaftaran
+   - Mendaftar untuk mengikuti perlombaan
+   - Menyimpan informasi registrasi
+
+4. Upload Dokumen
+   - Upload proposal sesuai template
+   - Upload surat rekomendasi sesuai template
+   - Bisa upload ulang jika ada koreksi
+
+5. Track Status
+   - Melihat status review dokumen dari admin
+   - Mengetahui dokumen mana yang sudah dikoreksi
+
+6. Lihat Feedback
+   - Menerima catatan/masukan dari admin
+   - Memahami perbaikan yang diperlukan
+
+
+6. STRUKTUR FOLDER PROYEK
+================================================================================
+project/
+├── app/
+│   ├── Models/           
+│   │   ├── User.php
+│   │   ├── Competition.php
+│   │   ├── Registration.php
+│   │   ├── DocumentTemplate.php
+│   │   └── SubmissionDocument.php
+│   ├── Http/Controllers/
+│   │   ├── Admin/
+│   │   │   ├── CompetitionController.php
+│   │   │   ├── RegistrationReviewController.php
+│   │   │   └── DocumentTemplateController.php
+│   │   ├── Peserta/
+│   │   │   ├── CompetitionController.php
+│   │   │   └── RegistrationController.php
+│   │   ├── ProfileController.php
+│   │   └── Controller.php
+│   ├── View/Components/
+│   └── Providers/
+├── routes/
+│   ├── web.php         (Route utama dengan middleware role-based)
+│   └── auth.php        (Route autentikasi dari Laravel Breeze)
+├── database/
+│   ├── migrations/     (10 migration files untuk schema)
+│   │   ├── create_users_table.php
+│   │   ├── add_role_to_users_table.php
+│   │   ├── create_competitions_table.php
+│   │   ├── create_document_templates_table.php
+│   │   ├── create_registrations_table.php
+│   │   └── create_submission_documents_table.php
+│   └── seeders/
+│       └── DatabaseSeeder.php
+├── resources/
+│   ├── views/
+│   │   ├── admin/       (Halaman admin)
+│   │   ├── peserta/     (Halaman peserta)
+│   │   ├── auth/        (Halaman login/register)
+│   │   ├── components/
+│   │   ├── layouts/
+│   │   ├── profile/
+│   │   ├── dashboard.blade.php
+│   │   └── welcome.blade.php
+│   ├── js/
+│   │   ├── app.js
+│   │   └── bootstrap.js
+│   └── css/
+│       └── app.css      (Tailwind CSS)
+├── storage/
+│   ├── app/
+│   │   ├── public/      (File publik: poster, guidebook)
+│   │   └── private/     (File privat)
+│   ├── framework/
+│   │   ├── cache/
+│   │   ├── sessions/
+│   │   ├── testing/
+│   │   └── views/
+│   └── logs/
+├── public/
+│   ├── storage/         (Symlink ke storage/app/public)
+│   ├── index.php
+│   └── build/          (Compiled assets)
+├── tests/
+│   ├── Feature/
+│   ├── Unit/
+│   └── TestCase.php
+├── config/             (Konfigurasi aplikasi)
+├── bootstrap/          (Bootstrap aplikasi)
+├── composer.json       (PHP dependencies)
+├── package.json        (Node.js dependencies)
+├── vite.config.js      (Build tool config)
+├── tailwind.config.js  (Tailwind CSS config)
+└── README.md
+
+
+7. ALUR USER JOURNEY
+================================================================================
+
+Admin Journey:
+-----------
+1. Login dengan email admin@example.com
+2. Masuk ke Dashboard Admin
+3. Manage Competitions
+   - Tambah perlombaan baru
+   - Upload poster dan guidebook
+4. Kelola Template Dokumen
+   - Buat template yang akan diminta ke peserta
+5. Review Pendaftaran
+   - Lihat peserta yang mendaftar
+   - Review dokumen yang di-upload
+6. Berikan Feedback
+   - Tandai status dokumen
+   - Tulis catatan perbaikan
+
+
+Peserta Journey:
+-----------
+1. Register/Login dengan email peserta
+2. Masuk ke Dashboard Peserta
+3. Browse Perlombaan
+   - Lihat daftar perlombaan yang tersedia
+   - Lihat detail dan download template
+4. Daftar Perlombaan
+   - Pilih perlombaan yang ingin diikuti
+   - Klik tombol pendaftaran
+5. Upload Dokumen
+   - Upload proposal sesuai template
+   - Upload surat rekomendasi
+6. Track Progress
+   - Lihat status dokumen di dashboard
+   - Baca feedback dari admin
+
+
+8. WORKFLOW SISTEM
+================================================================================
+
+Step 1: ADMIN INPUT
+┌──────────────────────────────────────────────────────┐
+│ Admin membuat Kompetisi:                             │
+│ - Input data kompetisi (judul, deskripsi, tahapan)  │
+│ - Upload poster                                      │
+│ - Upload guidebook                                   │
+│ - Buat template dokumen yang diminta                 │
+└──────────────────────────────────────────────────────┘
+                        ↓
+Step 2: PESERTA BROWSE
+┌──────────────────────────────────────────────────────┐
+│ Peserta melihat kompetisi:                           │
+│ - Lihat daftar kompetisi di dashboard               │
+│ - Download guidebook                                 │
+│ - Baca informasi lengkap                             │
+└──────────────────────────────────────────────────────┘
+                        ↓
+Step 3: PESERTA MENDAFTAR
+┌──────────────────────────────────────────────────────┐
+│ Peserta mendaftar:                                   │
+│ - Klik tombol "Daftar"                              │
+│ - Sistem membuat record Registration                │
+│ - Peserta siap upload dokumen                        │
+└──────────────────────────────────────────────────────┘
+                        ↓
+Step 4: PESERTA UPLOAD
+┌──────────────────────────────────────────────────────┐
+│ Peserta upload dokumen:                              │
+│ - Upload Proposal (sesuai template)                  │
+│ - Upload Surat Rekomendasi (sesuai template)        │
+│ - File disimpan dengan status "Belum Dikoreksi"     │
+└──────────────────────────────────────────────────────┘
+                        ↓
+Step 5: ADMIN REVIEW
+┌──────────────────────────────────────────────────────┐
+│ Admin review dokumen:                                │
+│ - Lihat dokumen yang di-upload                       │
+│ - Baca dan koreksi dokumen                           │
+│ - Update status dokumen                              │
+│ - Tulis catatan/feedback                             │
+└──────────────────────────────────────────────────────┘
+                        ↓
+Step 6: PESERTA LIHAT FEEDBACK
+┌──────────────────────────────────────────────────────┐
+│ Peserta melihat hasil review:                        │
+│ - Lihat status dokumen berubah                       │
+│ - Baca feedback dari admin                           │
+│ - Upload ulang jika diminta revisi                   │
+└──────────────────────────────────────────────────────┘
+
+
+9. KEAMANAN & KONTROL AKSES
+================================================================================
+
+Authentication:
+- Menggunakan Laravel Breeze
+- Login dengan email dan password
+- Password di-hash dengan bcrypt
+
+Authorization (Kontrol Akses):
+- Middleware `role:admin` untuk route admin
+- Middleware `role:peserta` untuk route peserta
+- Smart redirect di /dashboard berdasarkan role
+
+Route Protection:
+- /admin/* → Hanya admin yang bisa akses
+- /peserta/* → Hanya peserta yang bisa akses
+- /dashboard → Redirect ke dashboard sesuai role
+
+
+10. STATUS DOKUMEN (Document Workflow)
+================================================================================
+
+Setiap dokumen yang di-upload memiliki lifecycle:
+
+┌─────────────────────────────────────────────────────────┐
+│ BELUM DIKOREKSI                                         │
+│ Dokumen baru saja di-upload oleh peserta               │
+│ Status awal sebelum admin review                        │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ TERDAPAT KOREKSI (or) TIDAK ADA KOREKSI                │
+│ Admin sudah mereview dan memberi status                 │
+│ Field 'notes' berisi feedback dari admin               │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+Jika ada koreksi:
+┌─────────────────────────────────────────────────────────┐
+│ PESERTA UPLOAD ULANG                                    │
+│ Peserta melihat feedback dan upload versi baru          │
+│ Kembali ke status BELUM DIKOREKSI                       │
+└─────────────────────────────────────────────────────────┘
+
+
+11. DATABASE SCHEMA OVERVIEW
+================================================================================
+
+USERS Table:
+- id (primary key)
+- name
+- email
+- password (hashed)
+- role (admin / peserta)
+- timestamps
+
+COMPETITIONS Table:
+- id (primary key)
+- title
+- description
+- stages
+- poster_path
+- guidebook_path
+- source_link
+- timestamps
+
+DOCUMENT_TEMPLATES Table:
+- id (primary key)
+- competition_id (foreign key)
+- type (proposal / surat_rekomendasi)
+- template_file_path
+- timestamps
+
+REGISTRATIONS Table:
+- id (primary key)
+- user_id (foreign key)
+- competition_id (foreign key)
+- status
+- timestamps
+
+SUBMISSION_DOCUMENTS Table:
+- id (primary key)
+- registration_id (foreign key)
+- type (proposal / surat_rekomendasi)
+- file_path
+- status (belum_dikoreksi / terdapat_koreksi / tidak_ada_koreksi)
+- notes
+- timestamps
+
+
+12. TESTING AKUN
+================================================================================
+
+Setelah menjalankan migration dan seeder, gunakan:
+
+Admin Account:
+- Email    : admin@example.com
+- Password : password
+
+Peserta Account:
+- Email    : peserta1@example.com
+- Password : password
+
+
+13. INSTALASI & SETUP
+================================================================================
+
+1. Clone Repository
+   git clone <repository-url>
+   cd tugas-akhir
+
+2. Install Dependencies
+   composer install
+   npm install
+
+3. Setup Environment
+   cp .env.example .env
+   php artisan key:generate
+
+4. Konfigurasi Database
+   Edit .env file:
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=nama_database
+   DB_USERNAME=username
+   DB_PASSWORD=password
+
+5. Migrasi & Seeder
+   php artisan migrate
+   php artisan db:seed
+
+6. Setup Storage Link
+   php artisan storage:link
+
+7. Build Assets
+   npm run dev        (untuk development)
+   npm run build      (untuk production)
+
+8. Jalankan Server
+   php artisan serve
+
+9. Akses Aplikasi
+   http://localhost:8000
+
+
+14. KEUNGGULAN SISTEM
+================================================================================
+
+✓ Role-based Access Control
+  - Admin dan Peserta memiliki hak akses yang berbeda
+  - Middleware memastikan keamanan route
+
+✓ File Management
+  - Upload dan penyimpanan file dokumen terpusat
+  - Organisasi file per kompetisi dan peserta
+
+✓ Workflow yang Jelas
+  - Setiap tahap memiliki status yang terukur
+  - Mudah untuk track progress
+
+✓ User-Friendly Interface
+  - Blade templates dengan Tailwind CSS
+  - Design responsif dan modern
+
+✓ Scalable Architecture
+  - Menggunakan Laravel best practices
+  - Model, Controller, Route terpisah dengan baik
+  - Mudah untuk add features baru
+
+✓ Secure Authentication
+  - Menggunakan Laravel Breeze
+  - Password hashing dengan bcrypt
+  - Session management otomatis
+
+
+15. FITUR YANG BISA DIKEMBANGKAN
+================================================================================
+
+1. Email Notification
+   - Notifikasi saat dokumen sudah di-review
+   - Reminder untuk peserta
+
+2. Payment Integration
+   - Biaya pendaftaran perlombaan
+   - Gateway pembayaran
+
+3. Certificate Generation
+   - Generate sertifikat digital otomatis
+   - Untuk pemenang atau peserta
+
+4. Advanced Search & Filter
+   - Cari kompetisi berdasarkan kategori
+   - Filter berdasarkan tanggal/status
+
+5. Rating & Review
+   - Peserta bisa rate kompetisi
+   - Feedback untuk perbaikan
+
+6. Analytics Dashboard
+   - Statistik peserta per kompetisi
+   - Laporan submission documents
+
+7. API Integration
+   - REST API untuk mobile app
+   - Third-party integration
+
+
+================================================================================
+                            End of Document
+================================================================================
