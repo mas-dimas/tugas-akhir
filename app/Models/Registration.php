@@ -4,35 +4,35 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Competition;
-use App\Models\SubmissionDocument;
 
 class Registration extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
     protected $fillable = [
         'user_id',
         'competition_id',
         'status',
     ];
 
-    // Relasi: pendaftaran milik satu user (peserta)
+    /**
+     * Get the user that owns this registration.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi: pendaftaran untuk satu lomba
+    /**
+     * Get the competition this registration is for.
+     */
     public function competition()
     {
         return $this->belongsTo(Competition::class);
-    }
-
-    // Relasi: pendaftaran punya banyak dokumen yang di-upload
-    public function submissionDocuments()
-    {
-        return $this->hasMany(SubmissionDocument::class);
     }
 }

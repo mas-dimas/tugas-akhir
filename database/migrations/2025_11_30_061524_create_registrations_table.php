@@ -9,16 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up()
-{
-    Schema::create('registrations', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->foreignId('competition_id')->constrained()->onDelete('cascade');
-        $table->string('status')->default('submitted'); 
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('registrations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('competition_id')->constrained()->onDelete('cascade');
+            $table->enum('status', ['submitted'])->default('submitted');
+            $table->timestamps();
+            
+            // Prevent duplicate registrations
+            $table->unique(['user_id', 'competition_id']);
+        });
+    }
 
     /**
      * Reverse the migrations.

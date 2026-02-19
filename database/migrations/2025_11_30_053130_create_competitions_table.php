@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('competitions', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->longText('description');
+            $table->string('poster_path')->nullable();
             $table->timestamps();
         });
     }

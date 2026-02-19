@@ -9,25 +9,22 @@ class Competition extends Model
 {
     use HasFactory;
 
-    // Kolom yang boleh diisi mass-assignment
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
     protected $fillable = [
         'title',
         'description',
-        'stages',
         'poster_path',
-        'guidebook_path',
-        'source_link',
     ];
 
-    // Relasi: satu lomba punya banyak pendaftaran
+    /**
+     * Get all registrations for this competition.
+     */
     public function registrations()
     {
         return $this->hasMany(Registration::class);
-    }
-
-    // Relasi: satu lomba punya banyak template dokumen
-    public function documentTemplates()
-    {
-        return $this->hasMany(\App\Models\DocumentTemplate::class);
     }
 }
