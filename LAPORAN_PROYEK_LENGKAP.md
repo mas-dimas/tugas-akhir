@@ -21,6 +21,7 @@
 10. [Alur User & Use Cases](#alur-user--use-cases)
 11. [SDLC Implementation](#sdlc-implementation)
 12. [Setup & Deployment](#setup--deployment)
+13. [Running Mobile Apps](#-running-mobile-apps-flutter)
 
 ---
 
@@ -1161,6 +1162,367 @@ php artisan serve
 # 5. Set permissions
    chmod -R 755 storage/
    chmod -R 755 bootstrap/cache/
+```
+
+---
+
+## 📱 Running Mobile Apps (Flutter)
+
+### Prerequisites untuk Mobile Development
+
+```
+✅ Flutter SDK (3.x or higher)
+✅ Android SDK / Xcode
+✅ Emulator atau device fisik
+✅ Backend Laravel sudah running (http://localhost:8000)
+```
+
+### Quick Start: 5 Langkah
+
+#### Langkah 1: Verifikasi Flutter Installation
+
+```bash
+# Check Flutter installation
+flutter --version
+
+# Output harus seperti:
+# Flutter 3.x.x • channel stable
+# Dart 3.x.x
+
+# Jika error, install dari https://flutter.dev/docs/get-started/install
+```
+
+#### Langkah 2: Siapkan Backend
+
+**Terminal 1:**
+```bash
+cd /home/kali/tugas-akhir
+php artisan serve
+
+# Biarkan running
+# Output: Server running on http://127.0.0.1:8000
+```
+
+#### Langkah 3: Navigate ke Mobile Project & Get Dependencies
+
+**Terminal 2:**
+```bash
+cd /home/kali/tugas_akhir_mobile
+flutter pub get
+
+# Output:
+# Running "flutter pub get" in tugas_akhir_mobile...
+# Got dependencies! (xxx ms)
+```
+
+#### Langkah 4: Launch Emulator
+
+**Terminal 3:**
+
+**Option A: Android Emulator**
+```bash
+# List available emulators
+flutter emulators
+
+# Launch specific emulator
+flutter emulators --launch Pixel_4
+
+# Atau buka Android Studio → Device Manager → Launch emulator
+```
+
+**Option B: iOS Simulator (macOS only)**
+```bash
+# Launch iOS simulator
+open -a Simulator
+
+# Atau via command line
+flutter emulators --launch <emulator-name>
+```
+
+**Option C: Physical Device**
+```bash
+# Connect device via USB
+# Enable USB debugging on device
+# Check if device connected
+flutter devices
+
+# Device akan muncul di list
+```
+
+#### Langkah 5: Run Flutter App
+
+**Terminal 3:**
+```bash
+# Navigate to project
+cd /home/kali/tugas_akhir_mobile
+
+# Run app
+flutter run
+
+# Output:
+# Launching lib/main.dart on Pixel 4 in debug mode...
+# ✓ Built build/app/outputs/apk/debug/app-debug.apk (...)
+# Installing build/app/outputs/apk/debug/app-debug.apk...
+# 
+# Flutter run key commands.
+# r Hot reload. 🔥🔥🔥
+# R Hot restart.
+# q Quit (terminate the app from Flutter).
+# s Screenshot. Save a screenshot to flutter.png.
+# w Dump widget hierarchy to the console.
+# t Dump rendering tree to the console.
+# L Toggle platform channel verbose logging.
+# p Toggle WidgetInspector widget select mode.
+# I Toggle widget inspector.
+# o Simulate different operating systems (none currently supported).
+# z Run source code debugger and pause the app at start.
+```
+
+#### Langkah 6: Test Login
+
+**Credentials untuk Testing:**
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | `admin@example.com` | `password` |
+| Peserta | `peserta@example.com` | `password` |
+
+**Workflow:**
+1. App terbuka → Login screen
+2. Enter credentials
+3. Tap "Login"
+4. Navigate ke Competitions list
+5. Tap kompetisi → View detail
+6. Tap "Daftar" → Register
+7. Tap menu → View my registrations
+
+---
+
+### API Configuration (Important!)
+
+**File:** `lib/services/api_service.dart`
+
+#### Android Emulator
+```dart
+class ApiService {
+  // Android Emulator mengakses host machine via IP khusus
+  static const String baseUrl = 'http://10.0.2.2:8000/api';
+}
+```
+
+**Penjelasan:** Android emulator tidak bisa akses `localhost:8000` (itu virtualnya). Harus pakai `10.0.2.2` yang automatically mapped ke host machine.
+
+#### iOS Simulator
+```dart
+class ApiService {
+  // iOS Simulator bisa akses localhost langsung
+  static const String baseUrl = 'http://localhost:8000/api';
+}
+```
+
+#### Physical Device (Same Network)
+```dart
+class ApiService {
+  // Ganti XX dengan IP address machine Anda
+  // Cek IP: ifconfig (Linux/macOS) atau ipconfig (Windows)
+  static const String baseUrl = 'http://192.168.1.XX:8000/api';
+}
+```
+
+**Cara cek IP address:**
+```bash
+# Linux/macOS
+ifconfig | grep inet
+
+# Windows
+ipconfig
+```
+
+---
+
+### Hot Reload Development
+
+**Superpower Flutter** - perubahan code langsung terlihat tanpa rebuild!
+
+```bash
+# Saat app sedang running:
+
+r     # Hot reload (cepat, ~1 detik)
+      # Gunakan untuk UI changes, UI logic
+
+R     # Hot restart (lebih lama, rebuild app)
+      # Gunakan untuk model/state changes
+
+q     # Quit app
+
+s     # Screenshot (save ke flutter.png)
+
+w     # Dump widget hierarchy
+
+p     # Toggle WidgetInspector
+```
+
+**Example Workflow:**
+```bash
+# 1. Buat perubahan di file Dart
+# 2. Save file (Ctrl+S atau Cmd+S)
+# 3. Di terminal flutter, tekan 'r'
+# 4. Perubahan langsung terlihat di emulator!
+
+# Ini membuat development sangat cepat 🔥
+```
+
+---
+
+### Building APK/IPA (Production)
+
+#### Build Debug APK (untuk testing)
+```bash
+flutter build apk
+
+# Output:
+# ✓ Built build/app/outputs/apk/debug/app-debug.apk (...)
+# File size: ~50-100 MB
+```
+
+#### Build Release APK (untuk production)
+```bash
+# Generate signing key (first time only)
+keytool -genkey -v -keystore ~/key.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 -alias key
+
+# Build release
+flutter build apk --release
+
+# Output:
+# ✓ Built build/app/outputs/apk/release/app-release.apk
+# File size: ~20-30 MB (jauh lebih kecil!)
+```
+
+#### Build iOS (macOS only)
+```bash
+flutter build ios --release
+
+# Output file: build/ios/iphoneos/Runner.app
+```
+
+#### Install APK to Device
+```bash
+# Method 1: Langsung install dari build
+flutter install
+
+# Method 2: Manual
+adb install build/app/outputs/apk/debug/app-debug.apk
+```
+
+---
+
+### Project Structure (Mobile)
+
+```
+mobile-app/
+├── lib/
+│   ├── main.dart                    # Entry point
+│   ├── screens/
+│   │   ├── login_screen.dart        # Login UI
+│   │   ├── competitions_screen.dart  # List competitions
+│   │   ├── competition_detail_screen.dart
+│   │   ├── registration_screen.dart
+│   │   └── my_registrations_screen.dart
+│   ├── widgets/
+│   │   ├── competition_card.dart
+│   │   ├── loading_widget.dart
+│   │   └── error_widget.dart
+│   ├── models/
+│   │   ├── user.dart
+│   │   ├── competition.dart
+│   │   ├── registration.dart
+│   │   └── api_response.dart
+│   ├── services/
+│   │   ├── api_service.dart         # HTTP client
+│   │   └── auth_service.dart        # Auth logic
+│   ├── providers/
+│   │   ├── auth_provider.dart       # State management
+│   │   ├── competition_provider.dart
+│   │   └── registration_provider.dart
+│   └── utils/
+│       └── constants.dart
+├── pubspec.yaml                      # Dependencies
+├── android/
+│   └── app/
+│       └── build.gradle              # Android config
+├── ios/                              # iOS config
+└── test/                             # Unit tests
+```
+
+---
+
+### Troubleshooting Mobile Apps
+
+#### Issue: "Connection refused" di API calls
+
+**Cause:** Backend tidak running atau wrong API URL
+
+**Solution:**
+```bash
+# 1. Pastikan backend running
+cd /home/kali/tugas-akhir
+php artisan serve
+
+# 2. Check correct API URL di lib/services/api_service.dart
+# Android: http://10.0.2.2:8000/api
+# iOS: http://localhost:8000/api
+# Physical: http://192.168.1.XX:8000/api
+
+# 3. Restart app: tekan 'R' di flutter terminal
+```
+
+#### Issue: "Emulator not found"
+
+**Solution:**
+```bash
+# List emulators
+flutter emulators
+
+# Launch manually
+flutter emulators --launch <name>
+
+# Atau open Android Studio → Device Manager
+```
+
+#### Issue: "App crashes on login"
+
+**Check:**
+- ✅ Backend mendapat request? Cek Laravel logs
+- ✅ Token disave dengan proper? Check Secure Storage
+- ✅ API response format correct? Check API documentation
+
+#### Issue: "Build apk failed"
+
+```bash
+# Clean build
+flutter clean
+flutter pub get
+flutter build apk --release
+
+# Atau debug mode dulu
+flutter build apk
+```
+
+---
+
+### Key URLs & Credentials
+
+```
+🌐 Backend: http://localhost:8000
+📱 Mobile: Android/iOS app
+🔗 API: http://10.0.2.2:8000/api (Android)
+       http://localhost:8000/api (iOS)
+       http://192.168.1.XX:8000/api (Physical)
+
+👤 Test Accounts:
+   Admin: admin@example.com / password
+   Peserta: peserta@example.com / password
 ```
 
 #### Option 2: VPS/Cloud Server
